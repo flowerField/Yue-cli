@@ -1,6 +1,16 @@
 "use strict";
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 /* 1、引入 commander模块 */
+var path = require('path');
+
 var program = require("commander");
 /* 导出 package.json文件中 name和 version 信息 */
 
@@ -42,6 +52,26 @@ Object.keys(actions).forEach(function (action) {
   .action(function () {
     // 动作
     console.log("\u6267\u884C action->", action);
+    console.log(process.argv);
+    /* 示例：Yue-cli create xxx 命令的参数分布： [node,zhu-cli,create,xxx] */
+
+    /* 
+    [ '/usr/local/bin/node',
+      '/usr/local/bin/Yue-cli',
+      'create',
+      'xxx' 
+    ]
+    */
+
+    /* 加载并执行 create.js 文件中的代码，arg打印的值就是 xxx */
+
+    /* 
+    module.exports = async(arg) => {
+        console.log("arg", arg);
+    };
+    */
+
+    require(path.resolve(__dirname, action)).apply(void 0, _toConsumableArray(process.argv.slice(3)));
   });
 }); // 监听用户的help 事件
 
