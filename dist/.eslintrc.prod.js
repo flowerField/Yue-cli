@@ -1,0 +1,1 @@
+"use strict";module.exports={env:{browser:!0,es6:!0},extends:"eslint:recommended",globals:{Atomics:"readonly",SharedArrayBuffer:"readonly"},rules:{}};

@@ -1,3 +1,5 @@
+
+<!-- 第一阶段：让 Yue-cli 可用 -->
 1、初始化环境
 npm init -y                         # 初始化package.json
 npm install eslint husky --save-dev # eslint是负责代码校验工作,husky提供了git钩子功能
@@ -41,3 +43,14 @@ require('../src/main.js');
 ```
 npm link
 ```
+
+<!-- 第二阶段 让 Yue-cli 拥有help等配置项 -->
+1、安装模块
+npm install commander
+
+2、引入模块并使用
+const program = require("commander")
+program.version('1.0.1').parse(process.argv);
+
+
+
