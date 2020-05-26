@@ -4,6 +4,8 @@
 
 /* 2.导入模块 */
 var axios = require('axios');
+
+var ora = require('ora');
 /* 封装函数获取存放模板信息的数据 */
 
 
@@ -31,14 +33,20 @@ function fetchRepositoryList() {
 }
 
 module.exports = function _callee(arg) {
-  var data;
+  var task;
   return regeneratorRuntime.async(function _callee$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           console.log("arg", arg);
-          data = fetchRepositoryList();
-          console.log(data);
+          /* [ 'vue-simple-template', 'vue-template', 'easy-webpack-demo' ] */
+
+          task = ora("开始请求模板文件...");
+          task.start(); // let data = await fetchRepositoryList();
+          // // console.log(data);
+          // let names = data.map(item => item.name);
+          // console.log(names);
+          // setTimeout(spinner.succeed, 2000);
 
         case 3:
         case "end":
