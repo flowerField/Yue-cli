@@ -51,6 +51,3 @@ npm install commander
 2、引入模块并使用
 const program = require("commander")
 program.version('1.0.1').parse(process.argv);
-
-
-
