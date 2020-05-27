@@ -1,0 +1,1 @@
+"use strict";var downloadDirectory="".concat(process.env["darwin"===process.platform?"HOME":"USERPROFILE"],"/.template");module.exports={downloadDirectory:downloadDirectory};

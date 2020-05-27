@@ -119,15 +119,17 @@ require(path.resolve(__dirname,action))("xxx");
 <!-- (1) 通过 npm install axios 安装 axios 以发送网络请求下载初始化项目需要用到的模板文件。 -->
 <!-- (2) 封装异步发请求的代码以获取模板信息-->
 <!-- (3) 通过 npm install ora 安装 ora 并引入到项目中(作用是显示一些提示信息)  -->
-<!-- (4) 封装提示信息的函数 -->
+<!-- (4) 封装提函数 -->
 <!-- (5) 安装选择模板的 Node 模块 npm install inquirer 并引入-->
 <!-- (6) 使用inquirer.prompt({})来交互和选择用来创建项目的模板文件 -->
 <!-- (7) 使用inquirer.prompt({})来交互和选择需要的版本信息-->
 <!-- (8) 通过 cpn 来下载用户选择的对应版本的模板文件，如果需要渲染那么还需要先动态的融合 -->
 
 
-
-
+<!-- 安装模块-->
+npm install download-git-repo   <!-- 下载 git仓库的模块 -->
+npm install util                <!-- 内部的 promisify 用于将异步任务转换伪 Promise-->
+npm install ncp                 <!-- 安装 ncp 作用是用来拷贝文件(把 A 路径的文件拷贝到 B 路径) -->
 
 主要终端命令
 wendingding:Yue-cli wendingding$ Yue-cli 

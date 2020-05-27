@@ -2,7 +2,15 @@
 /* 2.导入模块 */
 const axios = require('axios');
 const ora = require('ora');
+const fs = require('fs');
+const ncp = require('ncp');
+const path = require('path');
 const inquirer = require('inquirer');
+const { promisify } = require('util');
+
+let downloadGitRepo = require('download-git-repo');
+downloadGitRepo = promisify(downloadGitRepo); /* 把异步 API 转换伪 Promise */
+const { downloadDirectory } = require('../util/constants.js');
 
 /* 封装函数获取存放模板信息的数据 */
 async function getRepositoryList() {
@@ -24,9 +32,19 @@ const loading = (fn, message) => async(...args) => {
     return result;
 };
 
-module.exports = async(arg) => {
+const downloadTask = async(repo, tag) => {
+    let url = `Yong-template/${repo}`;
+    if (tag) url += `#${tag}`
+        // /user/xxxx/.template/repo
+    const dest = `${downloadDirectory}/${repo}`;
+    console.log("dest", dest, "url", url);
+    await downloadGitRepo(url, dest);
+    return dest; // 下载的最终目录
+};
 
-    let repoList = await loading(getRepositoryList, "fetching template ....")();
+module.exports = async(projectName) => {
+
+    let repoList = await loading(getRepositoryList, "fetching template ...")();
     const { repo } = await inquirer.prompt({
         name: "repo",
         type: "list",
@@ -34,7 +52,7 @@ module.exports = async(arg) => {
         choices: repoList.map(item => item.name)
     })
 
-    let tagList = await loading(getTagList, "fetching tags ....")(repo);
+    let tagList = await loading(getTagList, "fetching tags ...")(repo);
 
     const { tag } = await inquirer.prompt({
         name: 'tag',
@@ -43,6 +61,16 @@ module.exports = async(arg) => {
         choices: tagList.map(item => item.name),
     });
 
-    console.log("tag ->", tag)
+    const dest = await loading(downloadTask, "download template ...")(repo, tag);
+    console.log("template", dest);
 
+    // console.log("tag ->", tag)
+    /* 根据选择的仓库 + 版本号，下载模板文件到当前项目中指定的文件夹 */
+
+    /* dest:/Users/文顶顶/.template/vue-simple-template */
+    /* url :Yong-template/vue-simple-template#v1.0.0 */
+    console.log("path.resolve(projectName)", path.resolve(projectName));
+    if (!fs.existsSync(path.join(dest, 'ask.js'))) {
+        await ncp(dest, path.resolve(projectName));
+    }
 };
