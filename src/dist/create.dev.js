@@ -183,6 +183,8 @@ module.exports = function _callee2(projectName) {
 
           /* url :Yong-template/vue-simple-template#v1.0.0 */
 
+          /* path.resolve(projectName) 表示在执行指令的当前目录下面创建projectName为名的文件夹 */
+
           console.log("path.resolve(projectName)", path.resolve(projectName));
 
           if (fs.existsSync(path.join(dest, 'ask.js'))) {
