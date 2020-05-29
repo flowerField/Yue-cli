@@ -9,7 +9,7 @@ const inquirer = require('inquirer');
 const { promisify } = require('util');
 
 let downloadGitRepo = require('download-git-repo');
-downloadGitRepo = promisify(downloadGitRepo); /* 把异步 API 转换伪 Promise */
+downloadGitRepo = promisify(downloadGitRepo); /* 把异步 API 转换为 Promise */
 const { downloadDirectory } = require('../util/constants.js');
 
 /* 封装函数获取存放模板信息的数据 */
@@ -35,7 +35,6 @@ const loading = (fn, message) => async(...args) => {
 const downloadTask = async(repo, tag) => {
     let url = `Yong-template/${repo}`;
     if (tag) url += `#${tag}`
-        // /user/xxxx/.template/repo
     const dest = `${downloadDirectory}/${repo}`;
     console.log("dest", dest, "url", url);
     await downloadGitRepo(url, dest);
@@ -72,6 +71,8 @@ module.exports = async(projectName) => {
 
     /* path.resolve(projectName) 表示在执行指令的当前目录下面创建projectName为名的文件夹 */
     console.log("path.resolve(projectName)", path.resolve(projectName));
+    await ncp(dest, path.resolve(projectName));
+
     if (!fs.existsSync(path.join(dest, 'ask.js'))) {
         await ncp(dest, path.resolve(projectName));
     }

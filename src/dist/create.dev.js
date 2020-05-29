@@ -21,7 +21,7 @@ var _require = require('util'),
 var downloadGitRepo = require('download-git-repo');
 
 downloadGitRepo = promisify(downloadGitRepo);
-/* 把异步 API 转换伪 Promise */
+/* 把异步 API 转换为 Promise */
 
 var _require2 = require('../util/constants.js'),
     downloadDirectory = _require2.downloadDirectory;
@@ -109,8 +109,7 @@ var downloadTask = function downloadTask(repo, tag) {
       switch (_context4.prev = _context4.next) {
         case 0:
           url = "Yong-template/".concat(repo);
-          if (tag) url += "#".concat(tag); // /user/xxxx/.template/repo
-
+          if (tag) url += "#".concat(tag);
           dest = "".concat(downloadDirectory, "/").concat(repo);
           console.log("dest", dest, "url", url);
           _context4.next = 6;
@@ -186,16 +185,19 @@ module.exports = function _callee2(projectName) {
           /* path.resolve(projectName) 表示在执行指令的当前目录下面创建projectName为名的文件夹 */
 
           console.log("path.resolve(projectName)", path.resolve(projectName));
+          _context5.next = 21;
+          return regeneratorRuntime.awrap(ncp(dest, path.resolve(projectName)));
 
+        case 21:
           if (fs.existsSync(path.join(dest, 'ask.js'))) {
-            _context5.next = 22;
+            _context5.next = 24;
             break;
           }
 
-          _context5.next = 22;
+          _context5.next = 24;
           return regeneratorRuntime.awrap(ncp(dest, path.resolve(projectName)));
 
-        case 22:
+        case 24:
         case "end":
           return _context5.stop();
       }

@@ -112,7 +112,7 @@ program.version(`Yue-cli version = ${version}`).parse(process.argv);
 <!-- require 加载模块得到的是函数，后面跟上()表示函数调用，并把参数传递给函数。 -->
 <!-- 如果是 Yue-cli create xxx 那么就加载 create.js 文件，并传递 xxx 给函数 -->
 <!-- 如果是 Yue-cli config ccc 那么就加载 config.js 文件，并传递 ccc 给函数 -->
-require(path.resolve(__dirname,action))("xxx");  
+require(path.resolve(__dirname,action))("xxx");
 
 <!-- 第四阶段 实现 create 初始化项目的命令 -->
 <!-- 核心过程 -->
@@ -127,7 +127,7 @@ require(path.resolve(__dirname,action))("xxx");
 
 
 <!-- 安装模块-->
-npm install download-git-repo   <!-- 下载 git仓库的模块 -->
+npm install download-git-repo   <!-- 下载  git仓库的模块 -->
 npm install util                <!-- 内部的 promisify 用于将异步任务转换伪 Promise-->
 npm install ncp                 <!-- 安装 ncp 作用是用来拷贝文件(把 A 路径的文件拷贝到 B 路径) -->
 
