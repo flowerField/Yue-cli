@@ -18,6 +18,14 @@ var inquirer = require('inquirer');
 var _require = require('util'),
     promisify = _require.promisify;
 
+var MetalSmith = require('metalsmith');
+
+var render = require('consolidate').ejs.render;
+/* 模板引擎 */
+
+
+render = promisify(render);
+
 var downloadGitRepo = require('download-git-repo');
 
 downloadGitRepo = promisify(downloadGitRepo);
@@ -126,19 +134,19 @@ var downloadTask = function downloadTask(repo, tag) {
   });
 };
 
-module.exports = function _callee2(projectName) {
+module.exports = function _callee4(projectName) {
   var repoList, _ref3, repo, tagList, _ref4, tag, dest;
 
-  return regeneratorRuntime.async(function _callee2$(_context5) {
+  return regeneratorRuntime.async(function _callee4$(_context7) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context7.prev = _context7.next) {
         case 0:
-          _context5.next = 2;
+          _context7.next = 2;
           return regeneratorRuntime.awrap(loading(getRepositoryList, "fetching template ...")());
 
         case 2:
-          repoList = _context5.sent;
-          _context5.next = 5;
+          repoList = _context7.sent;
+          _context7.next = 5;
           return regeneratorRuntime.awrap(inquirer.prompt({
             name: "repo",
             type: "list",
@@ -149,14 +157,14 @@ module.exports = function _callee2(projectName) {
           }));
 
         case 5:
-          _ref3 = _context5.sent;
+          _ref3 = _context7.sent;
           repo = _ref3.repo;
-          _context5.next = 9;
+          _context7.next = 9;
           return regeneratorRuntime.awrap(loading(getTagList, "fetching tags ...")(repo));
 
         case 9:
-          tagList = _context5.sent;
-          _context5.next = 12;
+          tagList = _context7.sent;
+          _context7.next = 12;
           return regeneratorRuntime.awrap(inquirer.prompt({
             name: 'tag',
             type: 'list',
@@ -167,13 +175,13 @@ module.exports = function _callee2(projectName) {
           }));
 
         case 12:
-          _ref4 = _context5.sent;
+          _ref4 = _context7.sent;
           tag = _ref4.tag;
-          _context5.next = 16;
+          _context7.next = 16;
           return regeneratorRuntime.awrap(loading(downloadTask, "download template ...")(repo, tag));
 
         case 16:
-          dest = _context5.sent;
+          dest = _context7.sent;
           console.log("template", dest); // console.log("tag ->", tag)
 
           /* 根据选择的仓库 + 版本号，下载模板文件到当前项目中指定的文件夹 */
@@ -185,21 +193,96 @@ module.exports = function _callee2(projectName) {
           /* path.resolve(projectName) 表示在执行指令的当前目录下面创建projectName为名的文件夹 */
 
           console.log("path.resolve(projectName)", path.resolve(projectName));
-          _context5.next = 21;
+          _context7.next = 21;
           return regeneratorRuntime.awrap(ncp(dest, path.resolve(projectName)));
 
         case 21:
-          if (fs.existsSync(path.join(dest, 'ask.js'))) {
-            _context5.next = 24;
+          if (fs.existsSync(path.join(dest, 'render.js'))) {
+            _context7.next = 26;
             break;
           }
 
-          _context5.next = 24;
+          _context7.next = 24;
           return regeneratorRuntime.awrap(ncp(dest, path.resolve(projectName)));
 
         case 24:
+          _context7.next = 28;
+          break;
+
+        case 26:
+          _context7.next = 28;
+          return regeneratorRuntime.awrap(new Promise(function (resolve, reject) {
+            MetalSmith(__dirname) // 如果你传入路径 他默认会遍历当前路径下的src文件夹
+            .source(dest).destination(path.resolve(projectName)).use(function _callee2(files, metal, done) {
+              var args, obj, meta;
+              return regeneratorRuntime.async(function _callee2$(_context5) {
+                while (1) {
+                  switch (_context5.prev = _context5.next) {
+                    case 0:
+                      args = require(path.join(dest, 'render.js'));
+                      _context5.next = 3;
+                      return regeneratorRuntime.awrap(inquirer.prompt(args));
+
+                    case 3:
+                      obj = _context5.sent;
+                      meta = metal.metadata();
+                      Object.assign(meta, obj);
+                      delete files['render.js'];
+                      done();
+
+                    case 8:
+                    case "end":
+                      return _context5.stop();
+                  }
+                }
+              });
+            }).use(function (files, metal, done) {
+              var obj = metal.metadata();
+              Reflect.ownKeys(files).forEach(function _callee3(file) {
+                var content;
+                return regeneratorRuntime.async(function _callee3$(_context6) {
+                  while (1) {
+                    switch (_context6.prev = _context6.next) {
+                      case 0:
+                        if (!(file.includes('js') || file.includes('json'))) {
+                          _context6.next = 7;
+                          break;
+                        }
+
+                        content = files[file].contents.toString(); // 文件的内容
+
+                        if (!content.includes('<%')) {
+                          _context6.next = 7;
+                          break;
+                        }
+
+                        _context6.next = 5;
+                        return regeneratorRuntime.awrap(render(content, obj));
+
+                      case 5:
+                        content = _context6.sent;
+                        files[file].contents = Buffer.from(content); // 渲染
+
+                      case 7:
+                      case "end":
+                        return _context6.stop();
+                    }
+                  }
+                });
+              });
+              done();
+            }).build(function (err) {
+              if (err) {
+                reject();
+              } else {
+                resolve();
+              }
+            });
+          }));
+
+        case 28:
         case "end":
-          return _context5.stop();
+          return _context7.stop();
       }
     }
   });

@@ -7,6 +7,10 @@ const ncp = require('ncp');
 const path = require('path');
 const inquirer = require('inquirer');
 const { promisify } = require('util');
+const MetalSmith = require('metalsmith');
+let { render } = require('consolidate').ejs; /* 模板引擎 */
+render = promisify(render);
+
 
 let downloadGitRepo = require('download-git-repo');
 downloadGitRepo = promisify(downloadGitRepo); /* 把异步 API 转换为 Promise */
@@ -73,7 +77,42 @@ module.exports = async(projectName) => {
     console.log("path.resolve(projectName)", path.resolve(projectName));
     await ncp(dest, path.resolve(projectName));
 
-    if (!fs.existsSync(path.join(dest, 'ask.js'))) {
+    if (!fs.existsSync(path.join(dest, 'render.js'))) {
         await ncp(dest, path.resolve(projectName));
+    } else {
+        await new Promise((resolve, reject) => {
+            MetalSmith(__dirname) // 如果你传入路径 他默认会遍历当前路径下的src文件夹
+                .source(dest)
+                .destination(path.resolve(projectName))
+                .use(async(files, metal, done) => {
+                    const args = require(path.join(dest, 'render.js'));
+                    const obj = await inquirer.prompt(args);
+                    const meta = metal.metadata();
+                    Object.assign(meta, obj);
+                    delete files['render.js'];
+                    done();
+                })
+                .use((files, metal, done) => {
+                    const obj = metal.metadata();
+                    Reflect.ownKeys(files).forEach(async(file) => {
+                        if (file.includes('js') || file.includes('json')) {
+                            let content = files[file].contents.toString(); // 文件的内容
+                            if (content.includes('<%')) {
+                                content = await render(content, obj);
+                                files[file].contents = Buffer.from(content); // 渲染
+                            }
+                        }
+                    });
+                    done();
+                })
+                .build((err) => {
+                    if (err) {
+                        reject();
+                    } else {
+                        resolve();
+                    }
+                });
+        });
+
     }
 };
