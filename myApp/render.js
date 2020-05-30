@@ -1,21 +1,21 @@
 module.exports = [{
         type: 'confirm',
         name: 'private',
-        message: 'This register is private ?',
+        message: 'this register is private ?',
     },
     {
         type: 'input',
         name: 'author',
-        message: "Please set the author name ?",
+        message: 'author?',
     },
     {
         type: 'input',
         name: 'description',
-        message: 'Please enter description information ?',
+        message: 'description ?',
     },
     {
         type: 'input',
         name: 'license',
-        message: 'Please enter license ?',
+        message: 'license ?',
     },
 ]

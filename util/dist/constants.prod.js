@@ -1,1 +1,1 @@
-"use strict";var downloadDirectory="".concat(process.env["darwin"===process.platform?"HOME":"USERPROFILE"],"/.template");module.exports={downloadDirectory:downloadDirectory};
+"use strict";var downloadDirectory="".concat(process.env["darwin"===process.platform?"HOME":"USERPROFILE"],"/.template"),configFile="".concat(process.env["darwin"===process.platform?"HOME":"USERPROFILE"],"/.Yuerc"),defaultConfig={repo:"Yue-cli"};module.exports={downloadDirectory:downloadDirectory,configFile:configFile,defaultConfig:defaultConfig};

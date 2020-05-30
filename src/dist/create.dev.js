@@ -1,8 +1,6 @@
 "use strict";
 
-/* 1.安装 axios | npm install axios */
-
-/* 2.导入模块 */
+/* 导入模块 */
 var axios = require('axios');
 
 var ora = require('ora');
